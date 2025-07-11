@@ -2,6 +2,7 @@ package com.example.healthcare.repository;
 
 import com.example.healthcare.model.Doctor;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,7 @@ public interface DoctorRepository extends MongoRepository<Doctor, String> {
     List<Doctor> findByYearsOfExperienceGreaterThan(int years);
 
     // Find doctors whose name contains a keyword (case-insensitive)
+    @Query("{ 'name' : { $regex: ?0, $options: 'i' } }")
     List<Doctor> findByNameContainingIgnoreCase(String keyword);
 
     // Find doctors by email
