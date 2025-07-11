@@ -61,5 +61,22 @@ public class PatientController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    /**
+     * PUT /api/patients/{id}
+     * Updates an existing patient.
+     * @param id The ID of the patient to update (from the URL path).
+     * @param updatedPatient The Patient object with updated information (from the request body).
+     * @return The updated patient with HTTP status 200 (OK), or 404 (Not Found) if the ID does not exist.
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<Patient> updatePatient(@PathVariable String id, @Valid @RequestBody Patient updatedPatient) {
+        try {
+            Patient patient = patientService.updatePatient(id, updatedPatient);
+            return new ResponseEntity<>(patient, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 }
