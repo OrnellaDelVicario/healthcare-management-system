@@ -78,5 +78,59 @@ public class PatientController {
         }
     }
 
+    /**
+     * DELETE /api/patients/{id}
+     * Deletes a patient by their ID.
+     * @param id The ID of the patient to delete.
+     * @return HTTP status 204 (No Content) on success, or 404 (Not Found) if the patient does not exist.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePatient(@PathVariable String id) {
+        try {
+            patientService.deletePatient(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // --- Custom Query Endpoints ---
+
+    /**
+     * GET /api/patients/age-above/{age}
+     * Finds patients older than a specified age.
+     * @param age The minimum age.
+     * @return A list of patients with HTTP status 200 (OK).
+     */
+    @GetMapping("/age-above/{age}")
+    public ResponseEntity<List<Patient>> getPatientsByAgeGreaterThan(@PathVariable int age) {
+        List<Patient> patients = patientService.findPatientsByAgeGreaterThan(age);
+        return new ResponseEntity<>(patients, HttpStatus.OK);
+    }
+
+    /**
+     * GET /api/patients/gender/{gender}
+     * Finds patients by a specified gender (case-insensitive).
+     * @param gender The gender to search for.
+     * @return A list of patients with HTTP status 200 (OK).
+     */
+    @GetMapping("/gender/{gender}")
+    public ResponseEntity<List<Patient>> getPatientsByGender(@PathVariable String gender) {
+        List<Patient> patients = patientService.findPatientsByGender(gender);
+        return new ResponseEntity<>(patients, HttpStatus.OK);
+    }
+
+    /**
+     * GET /api/patients/search-by-name?keyword=value
+     * Finds patients whose name contains a given keyword (case-insensitive) using the custom @Query method.
+     * @param keyword The keyword to search for in the patient's name.
+     * @return A list of matching patients with HTTP status 200 (OK).
+     */
+    @GetMapping("/search-by-name")
+    public ResponseEntity<List<Patient>> searchPatientsByName(@RequestParam String keyword) {
+        List<Patient> patients = patientService.searchPatientsByName(keyword);
+        return new ResponseEntity<>(patients, HttpStatus.OK);
+    }
+
 
 }
